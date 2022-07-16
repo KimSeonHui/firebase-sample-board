@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>sample</title>
+
+
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" 
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+   
+         <!-- firebase config -->
+      <!-- update the version number as needed -->
+      <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+      <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+
+      <script>        
+        const firebaseConfig = {
+          apiKey: "AIzaSyDf-lCXaEYsubkd4ZHVadTkuD1VLBDgagE",
+          authDomain: "fir-board-sample.firebaseapp.com",
+          projectId: "fir-board-sample",
+          storageBucket: "fir-board-sample.appspot.com",
+          messagingSenderId: "310208968953",
+          appId: "1:310208968953:web:66f8c77e1c3f4699f6ca28"
+        };
+
+        // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+  </head>
+  <body>
+    <nav class="navbar bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand">Sample Board</a>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+
+    <div class="container-fluid mt-5">
+      <div class="d-flex justify-content-end mb-3">
+        <a class="btn btn-success" href="./upload.html">글쓰기</a>
+      </div>
+
+      <table class="table">
+        <thead class="table-success">
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">제목</th>
+            <th scope="col">글쓴이</th>
+            <th scope="col">작성일</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+
+    <script>
+      const db = firebase.firestore();
+      db.collection('list').get().then((res) => {
+        let i = 1;
+        res.forEach((doc, index) => {
+       
+          const data = doc.data().data;
+
+          // const templete = `
+          //   <tr>
+          //     <th scope="row">${index + 1}</th>
+          //     <td>${data.name}</td>  
+          //     <td>${data.price}</td>  
+          //   </tr>
+          // 
+          const tr = document.createElement('tr');
+          const th = document.createElement('th');
+          th.textContent = i;
+          th.scope = 'row';
+
+          const title = document.createElement('td');
+          title.textContent = data.title;
+          const writer = document.createElement('td');
+          writer.textContent = data.writer;
+          const date = document.createElement('td');
+          date.textContent = data.date;
+
+          tr.appendChild(th);
+          tr.appendChild(title);
+          tr.appendChild(writer);
+          tr.appendChild(date);
+
+          document.getElementById('tbody').appendChild(tr);
+          i++;
+        })
+      })
+    </script>
+  </body>
+</html>

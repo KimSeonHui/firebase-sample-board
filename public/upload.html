@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>sample</title>
+
+
+    <!-- 
+      initialize the SDK after all desired features are loaded, set useEmulator to false
+      to avoid connecting the SDK to running emulators.
+    -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" 
+      integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" 
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+   
+            <!-- firebase config -->
+    <!-- update the version number as needed -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.5/firebase-storage.js"></script>
+
+    <script>        
+      const firebaseConfig = {
+        apiKey: "AIzaSyDf-lCXaEYsubkd4ZHVadTkuD1VLBDgagE",
+        authDomain: "fir-board-sample.firebaseapp.com",
+        projectId: "fir-board-sample",
+        storageBucket: "fir-board-sample.appspot.com",
+        messagingSenderId: "310208968953",
+        appId: "1:310208968953:web:66f8c77e1c3f4699f6ca28"
+      };
+
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+    </script>
+  </head>
+  <body>
+    <nav class="navbar bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand">Sample Board</a>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </nav>
+
+    <div class="container mt-3">
+        <input type="text" class="form-control mt-2" id="title" placeholder="title">
+        <input type="text" class="form-control mt-2" id="writer" placeholder="writer">
+        <textarea class="form-control mt-2" id="content">content</textarea>
+        <input class="form-control mt-2" type="file" id="image">
+        <button class="btn btn-success mt-3" id="send">올리기</button>
+      </div>
+
+  
+
+
+    <script>
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        const submitBtn = document.getElementById('send');
+
+       
+
+        submitBtn.addEventListener('click', () => {
+            const file = document.getElementById('image').files[0];
+
+            if(file != undefined) {
+                const storageRef = storage.ref();
+                const location = storageRef.child('image/'+ file.name);
+                const uploadWork = location.put(file);
+            }
+
+
+            const title = document.getElementById('title').value;
+            const writer = document.getElementById('writer').value;
+            const content = document.getElementById('content').value;
+
+            const data = {
+                title : title,
+                writer : writer,
+                content : content,
+                date : new Date().toJSON().substring(0, 10), 
+            }
+
+
+            db.collection('list').add({data}).then((result) => {
+                console.log('result', result); //성공 후 저장된 자료의 정보
+                window.location.href = '/index.html';
+            })
+            .catch((err) => {
+                console.log('err', err) // 실패 했을 때 나오는 에러 표시
+                alert('오류가 발생했습니다');
+            })
+        })
+
+      
+    
+    </script>
+  </body>
+</html>
